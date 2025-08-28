@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,8 +18,14 @@ import {
   Facebook,
   Twitter,
   Instagram,
-  Linkedin
+  Linkedin,
+  MessageCircle,
+  X,
+  Bot,
+  User,
+  ArrowRight
 } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required").min(2, "Name must be at least 2 characters"),
@@ -33,6 +39,11 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 export default function ContactPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, text: "Hi! I'm here to help you. How can I assist you today?", isBot: true }
+  ]);
+  const [chatInput, setChatInput] = useState("");
   
   const headerRef = useRef(null);
   const cardRef = useRef(null);
@@ -89,6 +100,39 @@ export default function ContactPage() {
     
     form.reset();
     setIsSubmitting(false);
+  };
+
+  const handleChatSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const userMessage = {
+      id: chatMessages.length + 1,
+      text: chatInput,
+      isBot: false
+    };
+
+    setChatMessages(prev => [...prev, userMessage]);
+    setChatInput("");
+
+    // Simulate bot response
+    setTimeout(() => {
+      const botResponses = [
+        "Thanks for your message! Our team will get back to you soon.",
+        "I can help you with general questions. For specific inquiries, please use our contact form.",
+        "Our office hours are Monday-Friday, 9 AM - 6 PM PST.",
+        "Would you like me to connect you with a team member? Please fill out the contact form.",
+        "For urgent matters, feel free to call us directly at +1 (555) 123-4567."
+      ];
+      
+      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+      
+      setChatMessages(prev => [...prev, {
+        id: prev.length + 1,
+        text: randomResponse,
+        isBot: true
+      }]);
+    }, 1000);
   };
 
   const socialLinks = [
@@ -166,41 +210,67 @@ export default function ContactPage() {
                 Get In Touch
               </h2>
               
-              {/* Call Us Button */}
-              <motion.a 
-                href="tel:+1-555-123-4567"
-                onClick={handleRippleEffect}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-primary-enhanced flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl text-accent-foreground font-semibold text-lg group relative overflow-hidden"
-                data-testid="button-call"
-              >
-                <motion.div
-                  whileHover={{ rotate: 12 }}
-                  transition={{ duration: 0.3 }}
+              {/* Enhanced Contact Grid */}
+              <div className="grid gap-4">
+                {/* Call Us Button */}
+                <motion.a 
+                  href="tel:+1-555-123-4567"
+                  onClick={handleRippleEffect}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
+                  data-testid="button-call"
                 >
-                  <Phone className="w-5 h-5" />
-                </motion.div>
-                <span>Call Us: +1 (555) 123-4567</span>
-              </motion.a>
+                  <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm opacity-90">Call us now</div>
+                    <div className="text-lg">+1 (555) 123-4567</div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </motion.a>
 
-              {/* Email Us Button */}
-              <motion.a 
-                href="mailto:contact@company.com"
-                onClick={handleRippleEffect}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-secondary hover:bg-secondary/80 flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl text-secondary-foreground font-semibold text-lg transition-all duration-300 border border-border relative overflow-hidden group"
-                data-testid="button-email"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.3 }}
+                {/* Email Us Button */}
+                <motion.a 
+                  href="mailto:contact@company.com"
+                  onClick={handleRippleEffect}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
+                  data-testid="button-email"
                 >
-                  <Mail className="w-5 h-5" />
-                </motion.div>
-                <span>Email: contact@company.com</span>
-              </motion.a>
+                  <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm opacity-90">Send us an email</div>
+                    <div className="text-lg">contact@company.com</div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </motion.a>
+
+                {/* WhatsApp Button */}
+                <motion.a 
+                  href="https://wa.me/1555123456789?text=Hello! I'd like to get in touch."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleRippleEffect}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
+                  data-testid="button-whatsapp"
+                >
+                  <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <SiWhatsapp className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm opacity-90">Chat on WhatsApp</div>
+                    <div className="text-lg">Quick Response</div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </motion.a>
+              </div>
 
               {/* Social Media Icons */}
               <div className="pt-6">
@@ -411,6 +481,127 @@ export default function ContactPage() {
           </motion.div>
         </motion.div>
       </main>
+
+      {/* Floating Chatbot */}
+      <motion.div
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1, type: "spring", stiffness: 200 }}
+      >
+        {/* Chat Toggle Button */}
+        <motion.button
+          onClick={() => setIsChatbotOpen(!isChatbotOpen)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="w-16 h-16 bg-gradient-to-r from-accent to-accent/80 rounded-full shadow-2xl flex items-center justify-center text-accent-foreground animate-glow-pulse hover:animate-none"
+          data-testid="chatbot-toggle"
+        >
+          <AnimatePresence mode="wait">
+            {isChatbotOpen ? (
+              <motion.div
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <X className="w-6 h-6" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="chat"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MessageCircle className="w-6 h-6" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
+
+        {/* Chat Interface */}
+        <AnimatePresence>
+          {isChatbotOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="absolute bottom-20 right-0 w-80 h-96 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden"
+              data-testid="chatbot-interface"
+            >
+              {/* Chat Header */}
+              <div className="bg-gradient-to-r from-accent to-accent/80 p-4 text-accent-foreground">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Support Assistant</h3>
+                    <p className="text-sm opacity-90">Online now</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat Messages */}
+              <div className="flex-1 p-4 space-y-3 h-64 overflow-y-auto bg-background/50">
+                {chatMessages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex gap-2 ${message.isBot ? 'justify-start' : 'justify-end'}`}
+                  >
+                    {message.isBot && (
+                      <div className="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Bot className="w-3 h-3 text-accent" />
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                        message.isBot
+                          ? 'bg-muted text-muted-foreground rounded-tl-sm'
+                          : 'bg-accent text-accent-foreground rounded-tr-sm'
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                    {!message.isBot && (
+                      <div className="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <User className="w-3 h-3 text-accent" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Chat Input */}
+              <div className="p-4 border-t border-border bg-card">
+                <form onSubmit={handleChatSubmit} className="flex gap-2">
+                  <Input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-1 bg-input border-border"
+                    data-testid="chat-input"
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    className="bg-accent hover:bg-accent/80 text-accent-foreground"
+                    data-testid="chat-send"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
