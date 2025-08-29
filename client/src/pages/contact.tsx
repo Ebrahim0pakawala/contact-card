@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Form,
   FormControl,
   FormField,
@@ -45,10 +52,10 @@ const contactFormSchema = z.object({
     .string()
     .min(1, "Email is required")
     .email("Please enter a valid email address"),
-  subject: z
+  phone: z.string().optional(),
+  service: z
     .string()
-    .min(1, "Subject is required")
-    .min(3, "Subject must be at least 3 characters"),
+    .min(1, "Service is required"),
   message: z
     .string()
     .min(1, "Message is required")
@@ -88,7 +95,8 @@ export default function ContactPage() {
     defaultValues: {
       name: "",
       email: "",
-      subject: "",
+      phone: "",
+      service: "",
       message: "",
     },
   });
@@ -116,16 +124,40 @@ export default function ContactPage() {
   const onSubmit = async (values: ContactFormValues) => {
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-    toast({
-      title: "Message sent successfully!",
-      description: "Thank you for your message. We'll get back to you soon.",
-    });
+      const result = await response.json();
 
-    form.reset();
-    setIsSubmitting(false);
+      if (response.ok && result.success) {
+        toast({
+          title: "Message sent successfully!",
+          description: result.message || "Thank you for your message. We'll get back to you soon.",
+        });
+        form.reset();
+      } else {
+        toast({
+          title: "Failed to send message",
+          description: result.message || "Please try again later.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: "Failed to send message",
+        description: "Please check your internet connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const quickActions = [
@@ -532,20 +564,50 @@ export default function ContactPage() {
 
                   <FormField
                     control={form.control}
-                    name="subject"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-muted-foreground">
-                          Subject *
+                          Phone Number
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="How can we help you?"
+                            type="tel"
+                            placeholder="+91 7506978153"
                             className="form-input-enhanced bg-input border-border text-foreground"
-                            data-testid="input-subject"
+                            data-testid="input-phone"
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="service"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-muted-foreground">
+                          Service Required *
+                        </FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="form-input-enhanced bg-input border-border text-foreground" data-testid="select-service">
+                              <SelectValue placeholder="Select a service" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-background border-border">
+                            <SelectItem value="electrical-installation">Electrical Installation</SelectItem>
+                            <SelectItem value="wiring-rewiring">Wiring & Rewiring</SelectItem>
+                            <SelectItem value="electrical-repair">Electrical Repair</SelectItem>
+                            <SelectItem value="emergency-service">Emergency Service</SelectItem>
+                            <SelectItem value="lighting-solutions">Lighting Solutions</SelectItem>
+                            <SelectItem value="panel-upgrade">Panel Upgrade</SelectItem>
+                            <SelectItem value="maintenance">Maintenance</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
