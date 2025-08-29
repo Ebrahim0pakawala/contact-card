@@ -288,7 +288,7 @@ export default function ContactPage() {
               headerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
             }
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent"
+            className="text-5xl font-bold bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent mt-[8px] mb-[8px] pt-[7px] pb-[7px]"
             data-testid="page-title"
           >
             Contact Bright Electricals
