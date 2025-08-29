@@ -64,11 +64,12 @@ export default function ContactPage() {
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
-      text: "Hi! I'm here to help you. How can I assist you today?",
+      text: "Hi! Welcome to Bright Electricals! I'm here to help you with electrical services. How can I assist you today?",
       isBot: true,
     },
   ]);
   const [chatInput, setChatInput] = useState("");
+  const [showQuickActions, setShowQuickActions] = useState(true);
 
   const headerRef = useRef(null);
   const cardRef = useRef(null);
@@ -127,9 +128,94 @@ export default function ContactPage() {
     setIsSubmitting(false);
   };
 
+  const quickActions = [
+    { id: 'quote', text: '💡 Get Quote', action: 'quote' },
+    { id: 'emergency', text: '🚨 Emergency Service', action: 'emergency' },
+    { id: 'hours', text: '🕒 Business Hours', action: 'hours' },
+    { id: 'services', text: '⚡ Our Services', action: 'services' },
+  ];
+
+  const getSmartResponse = (userInput: string) => {
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('emergency') || input.includes('urgent') || input.includes('help')) {
+      return "🚨 For electrical emergencies, please call us immediately at +91 7506978153. Our emergency services are available 24/7 for urgent electrical issues.";
+    }
+    
+    if (input.includes('quote') || input.includes('price') || input.includes('cost') || input.includes('estimate')) {
+      return "💡 I'd be happy to help you get a quote! Please fill out the contact form with details about your electrical needs, or call us at +91 7506978153 for a quick estimate.";
+    }
+    
+    if (input.includes('hours') || input.includes('open') || input.includes('time')) {
+      return "🕒 Our business hours are Monday-Friday: 9:00 AM - 6:00 PM. For emergencies, we're available 24/7. Contact us anytime!";
+    }
+    
+    if (input.includes('service') || input.includes('electrical') || input.includes('wiring') || input.includes('installation')) {
+      return "⚡ We provide comprehensive electrical services including wiring, installations, repairs, maintenance, and emergency services. Visit our website or call +91 7506978153 for more details!";
+    }
+    
+    if (input.includes('location') || input.includes('address') || input.includes('where')) {
+      return "📍 We're located at 26 Mehta Building, 1st floor, Room no. 3, Calicut Street, Ballard Estate. You can find us on the map below!";
+    }
+    
+    return "Thanks for your message! Our team specializes in all electrical services. For specific inquiries, please call +91 7506978153 or fill out our contact form. How else can I help you today?";
+  };
+
+  const handleQuickAction = (action: string) => {
+    setShowQuickActions(false);
+    
+    const actionMessages = {
+      quote: "I'd like to get a quote for electrical services",
+      emergency: "I need emergency electrical service", 
+      hours: "What are your business hours?",
+      services: "What electrical services do you provide?"
+    };
+
+    const userMessage = {
+      id: chatMessages.length + 1,
+      text: actionMessages[action as keyof typeof actionMessages],
+      isBot: false
+    };
+
+    setChatMessages((prev) => [...prev, userMessage]);
+
+    // Provide specific responses for each action
+    setTimeout(() => {
+      let botResponse = "";
+      
+      switch(action) {
+        case 'quote':
+          botResponse = "💡 Great! To provide you with an accurate quote, I'll need some details about your electrical needs. Please fill out our contact form or call us at +91 7506978153. We offer free estimates!";
+          break;
+        case 'emergency':
+          botResponse = "🚨 For immediate electrical emergencies, please call us now at +91 7506978153. We provide 24/7 emergency services for urgent electrical issues. Stay safe!";
+          break;
+        case 'hours':
+          botResponse = "🕒 Our business hours are:\nMonday-Friday: 9:00 AM - 6:00 PM\n\nFor emergencies, we're available 24/7. You can reach us anytime at +91 7506978153.";
+          break;
+        case 'services':
+          botResponse = "⚡ Bright Electricals provides comprehensive electrical services:\n• Electrical installations\n• Wiring & rewiring\n• Electrical repairs\n• Maintenance services\n• Emergency electrical services\n• Safety inspections\n\nVisit our website or call +91 7506978153 for detailed information!";
+          break;
+        default:
+          botResponse = "How can I help you further with your electrical needs?";
+      }
+      
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          text: botResponse,
+          isBot: true,
+        },
+      ]);
+    }, 1000);
+  };
+
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
+
+    setShowQuickActions(false);
 
     const userMessage = {
       id: chatMessages.length + 1,
@@ -138,26 +224,18 @@ export default function ContactPage() {
     };
 
     setChatMessages((prev) => [...prev, userMessage]);
+    const currentInput = chatInput;
     setChatInput("");
 
-    // Simulate bot response
+    // Get smart response based on user input
     setTimeout(() => {
-      const botResponses = [
-        "Thanks for your message! Our team will get back to you soon.",
-        "I can help you with general questions. For specific inquiries, please use our contact form.",
-        "Our office hours are Monday-Friday, 9 AM - 6 PM PST.",
-        "Would you like me to connect you with a team member? Please fill out the contact form.",
-        "For urgent matters, feel free to call us directly at +91 7506978153.",
-      ];
-
-      const randomResponse =
-        botResponses[Math.floor(Math.random() * botResponses.length)];
-
+      const smartResponse = getSmartResponse(currentInput);
+      
       setChatMessages((prev) => [
         ...prev,
         {
           id: prev.length + 1,
-          text: randomResponse,
+          text: smartResponse,
           isBot: true,
         },
       ]);
@@ -689,6 +767,48 @@ export default function ContactPage() {
                     )}
                   </motion.div>
                 ))}
+                
+                {/* Quick Action Buttons */}
+                {showQuickActions && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 border-t border-border/50"
+                  >
+                    <div className="text-xs text-muted-foreground mb-2 text-center">
+                      Quick actions:
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {quickActions.map((action) => (
+                        <motion.button
+                          key={action.id}
+                          onClick={() => handleQuickAction(action.action)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="text-xs bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 rounded-lg p-2 transition-colors duration-200"
+                          data-testid={`quick-action-${action.id}`}
+                        >
+                          {action.text}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+                
+                {/* Show Quick Actions Again Button */}
+                {!showQuickActions && chatMessages.length > 1 && (
+                  <div className="p-2 text-center">
+                    <motion.button
+                      onClick={() => setShowQuickActions(true)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="text-xs text-accent hover:text-accent/80 underline"
+                      data-testid="show-quick-actions"
+                    >
+                      Show quick actions
+                    </motion.button>
+                  </div>
+                )}
               </div>
 
               {/* Chat Input */}
