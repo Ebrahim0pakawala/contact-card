@@ -39,6 +39,7 @@ import {
   User,
   ArrowRight,
   Globe,
+  BarChart3,
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import logoImage from "@assets/Untitled design (28)_1756451105933.png";
@@ -101,6 +102,24 @@ export default function ContactPage() {
     },
   });
 
+  const trackButtonClick = async (buttonType: string, buttonLabel: string, metadata?: any) => {
+    try {
+      await fetch('/api/track-click', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          buttonType,
+          buttonLabel,
+          metadata,
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to track button click:', error);
+    }
+  };
+
   const handleRippleEffect = (e: React.MouseEvent<HTMLElement>) => {
     const button = e.currentTarget;
     const ripple = document.createElement("span");
@@ -119,6 +138,11 @@ export default function ContactPage() {
     setTimeout(() => {
       ripple.remove();
     }, 600);
+  };
+
+  const handleButtonClick = async (e: React.MouseEvent<HTMLElement>, buttonType: string, buttonLabel: string, metadata?: any) => {
+    handleRippleEffect(e);
+    await trackButtonClick(buttonType, buttonLabel, metadata);
   };
 
   const onSubmit = async (values: ContactFormValues) => {
@@ -275,9 +299,9 @@ export default function ContactPage() {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: "https://www.facebook.com/hussain.pakawala", color: "hover:bg-blue-600" },
-    { icon: Instagram, href: "https://www.instagram.com/hussain_pakawala/", color: "hover:bg-pink-600" },
-    { icon: Linkedin, href: "https://www.linkedin.com/in/hussain-pakawala-649894134/", color: "hover:bg-blue-700" },
+    { icon: Facebook, href: "https://www.facebook.com/hussain.pakawala", color: "hover:bg-blue-600", name: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/hussain_pakawala/", color: "hover:bg-pink-600", name: "Instagram" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/hussain-pakawala-649894134/", color: "hover:bg-blue-700", name: "LinkedIn" },
   ];
 
   return (
@@ -290,7 +314,24 @@ export default function ContactPage() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-center py-12"
       >
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-4 relative">
+          {/* Dashboard Link */}
+          <motion.a
+            href="/dashboard"
+            initial={{ opacity: 0, x: 20 }}
+            animate={headerInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="absolute top-0 right-4 flex items-center gap-2 px-3 py-2 bg-accent/10 hover:bg-accent/20 rounded-lg text-accent text-sm font-medium transition-colors duration-300"
+            data-testid="link-dashboard"
+            onClick={(e) => {
+              e.preventDefault();
+              trackButtonClick('dashboard', 'View Dashboard', { url: '/dashboard' });
+              window.location.href = '/dashboard';
+            }}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Dashboard
+          </motion.a>
           {/* Company Logo */}
           <motion.a
             href="https://www.brightelectricals.co.in/"
@@ -377,7 +418,7 @@ export default function ContactPage() {
                 {/* Call Us Button */}
                 <motion.a
                   href="tel:+917506978153"
-                  onClick={handleRippleEffect}
+                  onClick={(e) => handleButtonClick(e, 'call', 'Call Us Now', { phone: '+917506978153' })}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
@@ -386,9 +427,9 @@ export default function ContactPage() {
                   <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <Phone className="w-6 h-6" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm opacity-90">Call us now</div>
-                    <div className="text-lg">+91 7506978153</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm opacity-90 truncate">Call us now</div>
+                    <div className="text-lg truncate">+91 7506978153</div>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.a>
@@ -396,7 +437,7 @@ export default function ContactPage() {
                 {/* Email Us Button */}
                 <motion.a
                   href="mailto:hussain@brightelectricals.co.in"
-                  onClick={handleRippleEffect}
+                  onClick={(e) => handleButtonClick(e, 'email', 'Send Email', { email: 'hussain@brightelectricals.co.in' })}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
@@ -405,19 +446,19 @@ export default function ContactPage() {
                   <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <Mail className="w-6 h-6" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm opacity-90">Send us an email</div>
-                    <div className="text-lg">hussain@bright...</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm opacity-90 truncate">Send us an email</div>
+                    <div className="text-lg truncate">hussain@brightelectricals.co.in</div>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.a>
 
                 {/* WhatsApp Button */}
                 <motion.a
-                  href="https://wa.link/ks8dxp"
+                  href="https://wa.link/6xmaxh"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={handleRippleEffect}
+                  onClick={(e) => handleButtonClick(e, 'whatsapp', 'Chat on WhatsApp', { url: 'https://wa.link/6xmaxh' })}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
@@ -426,9 +467,9 @@ export default function ContactPage() {
                   <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <SiWhatsapp className="w-6 h-6" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm opacity-90">Chat on WhatsApp</div>
-                    <div className="text-lg">Quick Response</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm opacity-90 truncate">Chat on WhatsApp</div>
+                    <div className="text-lg truncate">Quick Response</div>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.a>
@@ -438,7 +479,7 @@ export default function ContactPage() {
                   href="https://www.brightelectricals.co.in/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={handleRippleEffect}
+                  onClick={(e) => handleButtonClick(e, 'website', 'Visit Website', { url: 'https://www.brightelectricals.co.in/' })}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 flex items-center gap-4 p-4 rounded-2xl text-white font-semibold shadow-lg transition-all duration-300"
@@ -447,9 +488,9 @@ export default function ContactPage() {
                   <div className="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <Globe className="w-6 h-6" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm opacity-90">Visit our website</div>
-                    <div className="text-lg">brightelectricals.co.in</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm opacity-90 truncate">Visit our website</div>
+                    <div className="text-lg truncate">brightelectricals.co.in</div>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.a>
@@ -470,7 +511,7 @@ export default function ContactPage() {
                       <motion.a
                         key={index}
                         href={social.href}
-                        onClick={handleRippleEffect}
+                        onClick={(e) => handleButtonClick(e, 'social', social.name, { url: social.href, platform: social.name })}
                         initial={{ opacity: 0, y: 20 }}
                         animate={
                           actionsInView
