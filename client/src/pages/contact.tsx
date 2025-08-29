@@ -297,7 +297,7 @@ export default function ContactPage() {
                   </div>
                   <div className="flex-1">
                     <div className="text-sm opacity-90">Send us an email</div>
-                    <div className="text-lg">hussain@brightelectricals.co.in</div>
+                    <div className="text-lg">hussain@bright...</div>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.a>
