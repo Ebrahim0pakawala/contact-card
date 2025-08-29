@@ -721,7 +721,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="absolute bottom-20 right-0 w-80 h-96 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden"
+              className="absolute bottom-20 right-0 w-80 h-[28rem] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden"
               data-testid="chatbot-interface"
             >
               {/* Chat Header */}
@@ -738,7 +738,7 @@ export default function ContactPage() {
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-1 p-4 space-y-3 h-64 overflow-y-auto bg-background/50">
+              <div className="flex-1 p-4 space-y-3 h-72 overflow-y-auto bg-background/50">
                 {chatMessages.map((message) => (
                   <motion.div
                     key={message.id}
@@ -812,7 +812,7 @@ export default function ContactPage() {
               </div>
 
               {/* Chat Input */}
-              <div className="p-4 border-t border-border bg-card">
+              <div className="p-4 pb-6 border-t border-border bg-card">
                 <form onSubmit={handleChatSubmit} className="flex gap-2">
                   <Input
                     value={chatInput}
