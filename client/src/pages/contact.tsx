@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import logoImage from "../assets/Untitled design (28)_1756451105933.png";
+import { apiUrl } from "../lib/api";
 const contactFormSchema = z.object({
   name: z
     .string()
@@ -101,23 +102,17 @@ export default function ContactPage() {
     },
   });
 
-  const trackButtonClick = async (buttonType: string, buttonLabel: string, metadata?: any) => {
-    try {
-      await fetch('/api/track-click', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          buttonType,
-          buttonLabel,
-          metadata,
-        }),
-      });
-    } catch (error) {
-      console.error('Failed to track button click:', error);
-    }
-  };
+const trackButtonClick = async (buttonType: string, buttonLabel: string, metadata?: any) => {
+  try {
+    await fetch(apiUrl('/api/track-click'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ buttonType, buttonLabel, metadata }),
+    });
+  } catch (error) {
+    console.error('Failed to track button click:', error);
+  }
+};
 
   const handleRippleEffect = (e: React.MouseEvent<HTMLElement>) => {
     const button = e.currentTarget;
@@ -145,16 +140,13 @@ export default function ContactPage() {
   };
 
   const onSubmit = async (values: ContactFormValues) => {
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
+  setIsSubmitting(true);
+  try {
+    const response = await fetch(apiUrl('/api/contact'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    });
 
       const result = await response.json();
 
