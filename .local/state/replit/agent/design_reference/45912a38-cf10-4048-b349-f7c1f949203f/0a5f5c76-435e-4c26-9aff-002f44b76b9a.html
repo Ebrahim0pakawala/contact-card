@@ -1,0 +1,409 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Professional Digital Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(210 10% 98%);
+            --foreground: hsl(210 10% 20%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(210 10% 20%);
+            --primary: hsl(210 5% 33%);
+            --primary-foreground: hsl(0 0% 100%);
+            --secondary: hsl(210 10% 96%);
+            --secondary-foreground: hsl(210 10% 20%);
+            --muted: hsl(210 10% 96%);
+            --muted-foreground: hsl(210 5% 45%);
+            --accent: hsl(82 76% 60%);
+            --accent-foreground: hsl(210 10% 20%);
+            --border: hsl(210 20% 92%);
+            --input: hsl(210 20% 92%);
+            --ring: hsl(82 76% 60%);
+            --radius: 0.75rem;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: var(--font-sans);
+        }
+
+        .animate-card-enter {
+            animation: cardEnter 0.6s ease-out forwards;
+        }
+
+        .animate-scale-hover {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .animate-scale-hover:hover {
+            transform: scale(1.05);
+        }
+
+        .animate-button-hover {
+            transition: all 0.3s ease;
+        }
+
+        .animate-button-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(141, 223, 90, 0.3);
+        }
+
+        .form-input {
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(141, 223, 90, 0.2);
+        }
+
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .google-map {
+            filter: hue-rotate(10deg) saturate(0.9);
+            transition: filter 0.3s ease;
+        }
+
+        .google-map:hover {
+            filter: hue-rotate(0deg) saturate(1);
+        }
+    </style>
+    <!-- Lucide React Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <!-- @COMPONENT: ContactUsPage -->
+    <div class="min-h-screen bg-gradient-to-br from-background to-secondary p-4 md:p-8">
+        <!-- @COMPONENT: Header -->
+        <header class="text-center mb-8 animate-card-enter">
+            <!-- Company Logo Placeholder -->
+            <!-- A modern geometric company logo with clean lines -->
+            <div class="mx-auto w-24 h-24 mb-6 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                <i data-lucide="building-2" class="w-12 h-12 text-primary-foreground"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-3">Contact Us</h1>
+            <p class="text-lg text-muted-foreground max-w-md mx-auto">We'd love to hear from you! Get in touch and let's start something amazing together.</p>
+        </header>
+        <!-- @END_COMPONENT: Header -->
+
+        <!-- @COMPONENT: MainContactCard -->
+        <div class="max-w-6xl mx-auto">
+            <!-- Digital Card Container -->
+            <div class="bg-card rounded-2xl shadow-2xl overflow-hidden animate-card-enter" style="animation-delay: 0.2s;">
+                <div class="grid lg:grid-cols-2 gap-0">
+                    
+                    <!-- Left Section: Contact Actions & Social -->
+                    <!-- @COMPONENT: ContactActions -->
+                    <div class="p-8 lg:p-12 space-y-8">
+                        <div class="space-y-6">
+                            <h2 class="text-2xl font-semibold text-card-foreground mb-6">Get In Touch</h2>
+                            
+                            <!-- Contact Buttons -->
+                            <div class="space-y-4">
+                                <!-- Call Us Button -->
+                                <a href="tel:+1234567890" 
+                                   class="flex items-center p-4 bg-primary text-primary-foreground rounded-xl animate-button-hover w-full group">
+                                    <i data-lucide="phone" class="w-5 h-5 mr-3 group-hover:animate-pulse"></i>
+                                    <div class="text-left">
+                                        <div class="font-medium">Call Us</div>
+                                        <div class="text-sm opacity-90">+1 (234) 567-8900</div>
+                                    </div>
+                                </a>
+
+                                <!-- Email Us Button -->
+                                <a href="mailto:hello@company.com" 
+                                   class="flex items-center p-4 bg-accent text-accent-foreground rounded-xl animate-button-hover w-full group">
+                                    <i data-lucide="mail" class="w-5 h-5 mr-3 group-hover:animate-pulse"></i>
+                                    <div class="text-left">
+                                        <div class="font-medium">Email Us</div>
+                                        <div class="text-sm opacity-80">hello@company.com</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Social Media Links -->
+                            <div class="pt-6">
+                                <h3 class="text-lg font-medium text-card-foreground mb-4">Follow Us</h3>
+                                <div class="flex space-x-4">
+                                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
+                                       class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center social-icon">
+                                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                                    </a>
+                                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
+                                       class="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center social-icon">
+                                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                                    </a>
+                                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+                                       class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl flex items-center justify-center social-icon">
+                                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                                    </a>
+                                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                                       class="w-12 h-12 bg-blue-700 text-white rounded-xl flex items-center justify-center social-icon">
+                                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Office Information -->
+                        <div class="pt-8 border-t border-border">
+                            <h3 class="text-lg font-medium text-card-foreground mb-3">Visit Our Office</h3>
+                            <div class="space-y-2 text-muted-foreground">
+                                <div class="flex items-center">
+                                    <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                                    <span data-mock="true">123 Business Street, Suite 456</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i data-lucide="map-pin" class="w-4 h-4 mr-2 opacity-0"></i>
+                                    <span data-mock="true">San Francisco, CA 94105</span>
+                                </div>
+                                <div class="flex items-center mt-3">
+                                    <i data-lucide="clock" class="w-4 h-4 mr-2"></i>
+                                    <span>Mon-Fri: 9:00 AM - 6:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: ContactActions -->
+
+                    <!-- Right Section: Contact Form -->
+                    <!-- @COMPONENT: ContactForm -->
+                    <div class="p-8 lg:p-12 bg-secondary/30">
+                        <h2 class="text-2xl font-semibold text-card-foreground mb-6">Send us a Message</h2>
+                        
+                        <form id="contactForm" class="space-y-6" data-implementation="Handle form submission with validation">
+                            <!-- Name Field -->
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-card-foreground mb-2">
+                                    Full Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="name" name="name" required
+                                       class="form-input w-full px-4 py-3 rounded-xl border border-border bg-card text-card-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                                       placeholder="Your full name" data-bind="formData.name">
+                            </div>
+
+                            <!-- Email Field -->
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-card-foreground mb-2">
+                                    Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" required
+                                       class="form-input w-full px-4 py-3 rounded-xl border border-border bg-card text-card-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                                       placeholder="your.email@example.com" data-bind="formData.email">
+                            </div>
+
+                            <!-- Subject Field -->
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-card-foreground mb-2">
+                                    Subject <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="subject" name="subject" required
+                                       class="form-input w-full px-4 py-3 rounded-xl border border-border bg-card text-card-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                                       placeholder="What's this about?" data-bind="formData.subject">
+                            </div>
+
+                            <!-- Message Field -->
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-card-foreground mb-2">
+                                    Message <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="message" name="message" rows="5" required
+                                          class="form-input w-full px-4 py-3 rounded-xl border border-border bg-card text-card-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-none"
+                                          placeholder="Tell us more about your project or inquiry..." data-bind="formData.message"></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" 
+                                    class="w-full bg-accent text-accent-foreground py-4 px-6 rounded-xl font-semibold animate-button-hover flex items-center justify-center group"
+                                    data-event="click:handleSubmit">
+                                <i data-lucide="send" class="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                    <!-- @END_COMPONENT: ContactForm -->
+                </div>
+
+                <!-- Map Section -->
+                <!-- @COMPONENT: GoogleMapSection -->
+                <div class="px-8 lg:px-12 pb-8 lg:pb-12">
+                    <h3 class="text-xl font-semibold text-card-foreground mb-4">Find Us Here</h3>
+                    <div class="rounded-xl overflow-hidden shadow-lg">
+                        <!-- Google Map showing San Francisco downtown area as company location -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8308305064846!2d-122.40641878468128!3d37.78583097975817!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c3a8af679%3A0x875a5915c9c93958!2sSan%20Francisco%2C%20CA%2C%20USA!5e0!3m2!1sen!2sus!4v1623456789012!5m2!1sen!2sus" 
+                                width="100%" 
+                                height="300" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                class="google-map w-full">
+                        </iframe>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: GoogleMapSection -->
+            </div>
+        </div>
+        <!-- @END_COMPONENT: MainContactCard -->
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-muted-foreground">
+            <p class="text-sm">&copy; 2024 Your Company Name. All rights reserved.</p>
+        </footer>
+    </div>
+    <!-- @END_COMPONENT: ContactUsPage -->
+
+    <script>
+        (function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Form handling
+            const contactForm = document.getElementById('contactForm');
+            
+            // @STATE: formData:object, isSubmitting:boolean = false
+            let formData = {
+                name: '',
+                email: '',
+                subject: '',
+                message: ''
+            };
+
+            // Form validation
+            function validateForm() {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    alert('Please fill in all required fields.');
+                    return false;
+                }
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address.');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Form submission handler
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // TODO: Implement actual form submission to backend API
+                    
+                    // Simulate form submission
+                    const submitButton = contactForm.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    
+                    submitButton.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i>Sending...';
+                    submitButton.disabled = true;
+                    
+                    setTimeout(() => {
+                        alert('Thank you for your message! We\'ll get back to you soon.');
+                        contactForm.reset();
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                        lucide.createIcons(); // Reinitialize icons
+                    }, 2000);
+                }
+            });
+
+            // Add smooth scroll to sections if needed
+            function smoothScroll(target) {
+                document.querySelector(target)?.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+
+            // Initialize entrance animations on scroll
+            function initScrollAnimations() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.animate-card-enter').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', initScrollAnimations);
+        })();
+    </script>
+</body>
+</html>

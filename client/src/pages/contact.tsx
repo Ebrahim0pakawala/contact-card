@@ -42,8 +42,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import logoImage from "@assets/Untitled design (28)_1756451105933.png";
-
+import logoImage from "../assets/Untitled design (28)_1756451105933.png";
 const contactFormSchema = z.object({
   name: z
     .string()
@@ -315,23 +314,7 @@ export default function ContactPage() {
         className="text-center py-12"
       >
         <div className="max-w-4xl mx-auto px-4 relative">
-          {/* Dashboard Link */}
-          <motion.a
-            href="/dashboard"
-            initial={{ opacity: 0, x: 20 }}
-            animate={headerInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="absolute top-0 right-4 flex items-center gap-2 px-3 py-2 bg-accent/10 hover:bg-accent/20 rounded-lg text-accent text-sm font-medium transition-colors duration-300"
-            data-testid="link-dashboard"
-            onClick={(e) => {
-              e.preventDefault();
-              trackButtonClick('dashboard', 'View Dashboard', { url: '/dashboard' });
-              window.location.href = '/dashboard';
-            }}
-          >
-            <BarChart3 className="w-4 h-4" />
-            Dashboard
-          </motion.a>
+          
           {/* Company Logo */}
           <motion.a
             href="https://www.brightelectricals.co.in/"

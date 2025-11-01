@@ -113,6 +113,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // --- Added dashboard actions below ---
+
+  // Delete a submission
+  app.delete("/api/dashboard/submissions/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteContactSubmission(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to delete submission:", error);
+      res.status(500).json({ success: false, message: "Failed to delete submission" });
+    }
+  });
+
+  // Mark as addressed
+  app.post("/api/dashboard/submissions/:id/addressed", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.markContactSubmissionAddressed(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to mark as addressed:", error);
+      res.status(500).json({ success: false, message: "Failed to mark as addressed" });
+    }
+  });
+
+  // Edit a submission
+  app.put("/api/dashboard/submissions/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, email, phone, service, message } = req.body;
+      await storage.editContactSubmission(id, { name, email, phone, service, message });
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to edit submission:", error);
+      res.status(500).json({ success: false, message: "Failed to edit submission" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

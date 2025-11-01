@@ -1,0 +1,437 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Digital Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                    colors: {
+                        background: "var(--background)",
+                        foreground: "var(--foreground)",
+                        card: {
+                            DEFAULT: "var(--card)",
+                            foreground: "var(--card-foreground)",
+                        },
+                        primary: {
+                            DEFAULT: "var(--primary)",
+                            foreground: "var(--primary-foreground)",
+                        },
+                        secondary: {
+                            DEFAULT: "var(--secondary)",
+                            foreground: "var(--secondary-foreground)",
+                        },
+                        muted: {
+                            DEFAULT: "var(--muted)",
+                            foreground: "var(--muted-foreground)",
+                        },
+                        accent: {
+                            DEFAULT: "var(--accent)",
+                            foreground: "var(--accent-foreground)",
+                        },
+                        border: "var(--border)",
+                        input: "var(--input)",
+                        ring: "var(--ring)",
+                    },
+                    fontFamily: {
+                        sans: ["var(--font-sans)"],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'bounce-gentle': 'bounceGentle 0.3s ease-out',
+                        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' }
+                        },
+                        glowPulse: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(141, 223, 90, 0.3)' },
+                            '50%': { boxShadow: '0 0 30px rgba(141, 223, 90, 0.6)' }
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: hsl(220 13% 18%);
+            --foreground: hsl(220 9% 95%);
+            --card: hsl(220 13% 20%);
+            --card-foreground: hsl(220 9% 95%);
+            --primary: hsl(84 63% 55%);
+            --primary-foreground: hsl(220 13% 18%);
+            --secondary: hsl(220 13% 25%);
+            --secondary-foreground: hsl(220 9% 85%);
+            --muted: hsl(220 13% 25%);
+            --muted-foreground: hsl(220 9% 65%);
+            --accent: hsl(84 63% 55%);
+            --accent-foreground: hsl(220 13% 18%);
+            --border: hsl(220 13% 30%);
+            --input: hsl(220 13% 25%);
+            --ring: hsl(84 63% 55%);
+            --radius: 0.75rem;
+            --font-sans: "Inter", system-ui, sans-serif;
+        }
+
+        * {
+            font-family: var(--font-sans);
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-icon {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .form-input {
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(141, 223, 90, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), hsl(84 63% 45%));
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(141, 223, 90, 0.4);
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, var(--card), hsl(220 13% 22%));
+            backdrop-filter: blur(10px);
+        }
+
+        .map-container {
+            transition: all 0.3s ease;
+        }
+
+        .map-container:hover {
+            box-shadow: 0 0 30px rgba(141, 223, 90, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background text-foreground">
+    <!-- @COMPONENT: ContactPage [main component] -->
+    <div class="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
+        
+        <!-- @COMPONENT: Header [logo and title section] -->
+        <header class="text-center py-12 animate-on-scroll">
+            <div class="max-w-4xl mx-auto px-4">
+                <!-- Company logo placeholder -->
+                <!-- Modern tech company logo with geometric design -->
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-accent to-accent/80 rounded-2xl flex items-center justify-center shadow-xl">
+                    <i class="fas fa-bolt text-3xl text-accent-foreground"></i>
+                </div>
+                
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent animate-glow-pulse">
+                    Contact Us
+                </h1>
+                <p class="text-xl text-muted-foreground font-medium">
+                    We'd love to hear from you! Get in touch and let's build something amazing together.
+                </p>
+            </div>
+        </header>
+        <!-- @END_COMPONENT: Header -->
+
+        <!-- @COMPONENT: MainContactCard [primary contact interface] -->
+        <main class="max-w-6xl mx-auto px-4 pb-16">
+            <div class="contact-card rounded-3xl p-8 md:p-12 shadow-2xl hover-lift animate-on-scroll border border-border/50">
+                
+                <!-- Contact Actions Grid -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    
+                    <!-- @COMPONENT: ContactActions [call and email buttons] -->
+                    <div class="space-y-6 animate-on-scroll">
+                        <h2 class="text-2xl font-semibold mb-6 text-accent">Get In Touch</h2>
+                        
+                        <!-- Call Us Button -->
+                        <a href="tel:+1-555-123-4567" 
+                           class="btn-primary flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl text-accent-foreground font-semibold text-lg group"
+                           data-event="click:handleCallUs">
+                            <i class="fas fa-phone transform group-hover:rotate-12 transition-transform duration-300"></i>
+                            <span>Call Us: +1 (555) 123-4567</span>
+                        </a>
+
+                        <!-- Email Us Button -->
+                        <a href="mailto:contact@company.com" 
+                           class="bg-secondary hover:bg-secondary/80 flex items-center justify-center gap-3 w-full py-4 px-6 rounded-xl text-secondary-foreground font-semibold text-lg transition-all duration-300 hover:scale-105 border border-border"
+                           data-event="click:handleEmailUs">
+                            <i class="fas fa-envelope transform group-hover:scale-110 transition-transform duration-300"></i>
+                            <span>Email: contact@company.com</span>
+                        </a>
+
+                        <!-- Social Media Icons -->
+                        <div class="pt-6">
+                            <h3 class="text-lg font-semibold mb-4 text-muted-foreground">Follow Us</h3>
+                            <div class="flex gap-4 justify-center md:justify-start">
+                                <a href="#" class="social-icon w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-secondary-foreground hover:bg-accent hover:text-accent-foreground">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-secondary-foreground hover:bg-accent hover:text-accent-foreground">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-secondary-foreground hover:bg-accent hover:text-accent-foreground">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-secondary-foreground hover:bg-accent hover:text-accent-foreground">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: ContactActions -->
+
+                    <!-- @COMPONENT: ContactForm [message form] -->
+                    <div class="animate-on-scroll">
+                        <h2 class="text-2xl font-semibold mb-6 text-accent">Send a Message</h2>
+                        
+                        <form id="contactForm" class="space-y-6" data-implementation="Should validate form before submission">
+                            <!-- @STATE: formData:object = {name:'', email:'', subject:'', message:''} -->
+                            <!-- @STATE: formErrors:object = {} -->
+                            <!-- @STATE: isSubmitting:boolean = false -->
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-muted-foreground mb-2">
+                                        Full Name *
+                                    </label>
+                                    <input type="text" 
+                                           id="name" 
+                                           name="name" 
+                                           required 
+                                           data-bind="formData.name"
+                                           class="form-input w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                                           placeholder="John Doe" />
+                                </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-muted-foreground mb-2">
+                                        Email Address *
+                                    </label>
+                                    <input type="email" 
+                                           id="email" 
+                                           name="email" 
+                                           required 
+                                           data-bind="formData.email"
+                                           class="form-input w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                                           placeholder="john@example.com" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-muted-foreground mb-2">
+                                    Subject *
+                                </label>
+                                <input type="text" 
+                                       id="subject" 
+                                       name="subject" 
+                                       required 
+                                       data-bind="formData.subject"
+                                       class="form-input w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                                       placeholder="How can we help you?" />
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-muted-foreground mb-2">
+                                    Message *
+                                </label>
+                                <textarea id="message" 
+                                          name="message" 
+                                          rows="5" 
+                                          required 
+                                          data-bind="formData.message"
+                                          class="form-input w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground resize-none"
+                                          placeholder="Tell us about your project or inquiry..."></textarea>
+                            </div>
+
+                            <button type="submit" 
+                                    data-event="click:handleSubmit"
+                                    class="btn-primary w-full py-4 px-6 rounded-xl text-accent-foreground font-semibold text-lg flex items-center justify-center gap-3 group">
+                                <i class="fas fa-paper-plane transform group-hover:translate-x-1 transition-transform duration-300"></i>
+                                <span>Send Message</span>
+                            </button>
+                        </form>
+                    </div>
+                    <!-- @END_COMPONENT: ContactForm -->
+                </div>
+
+                <!-- @COMPONENT: MapSection [location display] -->
+                <div class="animate-on-scroll">
+                    <h2 class="text-2xl font-semibold mb-6 text-accent text-center">Our Location</h2>
+                    
+                    <div class="map-container rounded-2xl overflow-hidden shadow-xl border border-border/50">
+                        <!-- Google Maps embed showing San Francisco downtown area -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019284332866!2d-122.41941568519695!3d37.77492927975949!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c3c3c3c3c%3A0x3c3c3c3c3c3c3c3c!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1635959049076!5m2!1sen!2sus"
+                            width="100%" 
+                            height="300" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="w-full"
+                            data-implementation="Replace with actual company location coordinates">
+                        </iframe>
+                    </div>
+                    
+                    <div class="text-center mt-6 text-muted-foreground">
+                        <p class="font-medium">📍 123 Innovation Street, San Francisco, CA 94105</p>
+                        <p class="text-sm mt-2">Monday - Friday: 9:00 AM - 6:00 PM PST</p>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: MapSection -->
+            </div>
+        </main>
+        <!-- @END_COMPONENT: MainContactCard -->
+    </div>
+    <!-- @END_COMPONENT: ContactPage -->
+
+    <script>
+        // Scroll animation observer
+        (function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        })();
+
+        // Form handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // TODO: Implement proper form validation and submission
+            // Basic validation demonstration
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Simple validation
+            if (!data.name || !data.email || !data.subject || !data.message) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Simulate submission
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Thank you for your message! We\'ll get back to you soon.');
+                this.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn-primary, .social-icon').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .btn-primary, .social-icon {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(0);
+                animation: rippleEffect 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes rippleEffect {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

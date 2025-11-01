@@ -13,19 +13,22 @@ import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";
 
-// modify the interface with any CRUD methods
-// you might need
-
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Contact submissions
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getContactSubmissions(limit?: number): Promise<ContactSubmission[]>;
   getContactSubmissionById(id: string): Promise<ContactSubmission | undefined>;
-  
+  deleteContactSubmission(id: string): Promise<void>;
+  markContactSubmissionAddressed(id: string): Promise<void>;
+  editContactSubmission(
+    id: string,
+    data: { name: string; email: string; phone?: string; service: string; message: string }
+  ): Promise<void>;
+
   // Button clicks tracking
   trackButtonClick(click: InsertButtonClick): Promise<ButtonClick>;
   getButtonClicks(limit?: number): Promise<ButtonClick[]>;
@@ -59,7 +62,7 @@ export class DatabaseStorage implements IStorage {
   async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
     const [result] = await db
       .insert(contactSubmissions)
-      .values(submission)
+      .values({ ...submission, id: randomUUID() })
       .returning();
     return result;
   }
@@ -78,6 +81,27 @@ export class DatabaseStorage implements IStorage {
       .from(contactSubmissions)
       .where(eq(contactSubmissions.id, id));
     return submission || undefined;
+  }
+
+  async deleteContactSubmission(id: string): Promise<void> {
+    await db.delete(contactSubmissions).where(eq(contactSubmissions.id, id));
+  }
+
+  async markContactSubmissionAddressed(id: string): Promise<void> {
+    await db
+      .update(contactSubmissions)
+      .set({ addressed: true })
+      .where(eq(contactSubmissions.id, id));
+  }
+
+  async editContactSubmission(
+    id: string,
+    { name, email, phone, service, message }: { name: string; email: string; phone?: string; service: string; message: string }
+  ): Promise<void> {
+    await db
+      .update(contactSubmissions)
+      .set({ name, email, phone, service, message })
+      .where(eq(contactSubmissions.id, id));
   }
 
   // Button clicks tracking

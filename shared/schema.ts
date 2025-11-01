@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -19,15 +19,16 @@ export type User = typeof users.$inferSelect;
 
 // Contact form submissions table
 export const contactSubmissions = pgTable("contact_submissions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: text("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone"),
   service: text("service").notNull(),
   message: text("message").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   userAgent: text("user_agent"),
+  ip: text("ip"),
+  addressed: boolean("addressed").notNull().default(false),
 });
 
 // Button clicks tracking table

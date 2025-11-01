@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -27,6 +27,9 @@ import {
   MessageSquare,
   BarChart3,
   ArrowLeft,
+  Trash2,
+  CheckCircle,
+  Edit,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -40,6 +43,7 @@ interface ContactSubmission {
   createdAt: string;
   ipAddress?: string;
   userAgent?: string;
+  addressed?: boolean;
 }
 
 interface ButtonClick {
@@ -61,10 +65,16 @@ interface DashboardStats {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "submissions" | "clicks">("overview");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [editingSubmission, setEditingSubmission] = useState<ContactSubmission | null>(null);
+  const [editForm, setEditForm] = useState<ContactSubmission | null>(null);
 
+  const queryClient = useQueryClient();
+
+  // Queries
   const { data: statsData } = useQuery<{ success: boolean; data: DashboardStats }>({
     queryKey: ["/api/dashboard/stats"],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
   });
 
   const { data: submissionsData } = useQuery<{ success: boolean; data: ContactSubmission[] }>({
@@ -80,6 +90,95 @@ export default function DashboardPage() {
   const stats = statsData?.data;
   const submissions = submissionsData?.data || stats?.recentSubmissions || [];
   const clicks = clicksData?.data || stats?.recentClicks || [];
+
+  // Mutations
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      fetch(`/api/dashboard/submissions/${id}`, { method: "DELETE" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/dashboard/submissions"] }),
+  });
+
+  const markAddressedMutation = useMutation({
+    mutationFn: async (id: string) =>
+      fetch(`/api/dashboard/submissions/${id}/addressed`, { method: "POST" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/dashboard/submissions"] }),
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) =>
+      fetch(`/api/dashboard/submissions/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      }),
+    onSuccess: () => {
+      setSelectedIds([]);
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/submissions"] });
+    },
+  });
+
+  const bulkMarkAddressedMutation = useMutation({
+    mutationFn: async (ids: string[]) =>
+      fetch(`/api/dashboard/submissions/bulk-addressed`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      }),
+    onSuccess: () => {
+      setSelectedIds([]);
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/submissions"] });
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async (submission: ContactSubmission) =>
+      fetch(`/api/dashboard/submissions/${submission.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submission),
+      }),
+    onSuccess: () => {
+      setEditingSubmission(null);
+      setEditForm(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/submissions"] });
+    },
+  });
+
+  // Handlers
+  const handleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.length === submissions.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(submissions.map((s) => s.id));
+    }
+  };
+
+  const handleDelete = (id: string) => deleteMutation.mutate(id);
+  const handleMarkAddressed = (id: string) => markAddressedMutation.mutate(id);
+  const handleBulkDelete = () => bulkDeleteMutation.mutate(selectedIds);
+  const handleBulkMarkAddressed = () => bulkMarkAddressedMutation.mutate(selectedIds);
+
+  const handleEdit = (submission: ContactSubmission) => {
+    setEditingSubmission(submission);
+    setEditForm(submission);
+  };
+
+  const handleEditFormChange = (field: keyof ContactSubmission, value: string) => {
+    if (!editForm) return;
+    setEditForm({ ...editForm, [field]: value });
+  };
+
+  const handleEditFormSave = () => {
+    if (editForm) {
+      editMutation.mutate(editForm);
+    }
+  };
 
   const getButtonTypeIcon = (type: string) => {
     switch (type) {
@@ -310,20 +409,54 @@ export default function DashboardPage() {
                 <CardDescription>All contact form submissions from users</CardDescription>
               </CardHeader>
               <CardContent>
+                <div className="flex gap-2 mb-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={selectedIds.length === 0}
+                    onClick={handleBulkMarkAddressed}
+                  >
+                    Mark as Addressed
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={selectedIds.length === 0}
+                    onClick={handleBulkDelete}
+                  >
+                    Delete Selected
+                  </Button>
+                </div>
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.length === submissions.length && submissions.length > 0}
+                          onChange={handleSelectAll}
+                        />
+                      </TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
                       <TableHead>Service</TableHead>
                       <TableHead>Message</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {submissions.map((submission, index) => (
                       <TableRow key={submission.id} data-testid={`submission-row-${index}`}>
+                        <TableCell>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(submission.id)}
+                            onChange={() => handleSelect(submission.id)}
+                          />
+                        </TableCell>
                         <TableCell className="text-sm">
                           {format(new Date(submission.createdAt), "MMM dd, yyyy HH:mm")}
                         </TableCell>
@@ -338,6 +471,24 @@ export default function DashboardPage() {
                         <TableCell className="max-w-xs truncate" title={submission.message}>
                           {submission.message}
                         </TableCell>
+                        <TableCell>
+                          {submission.addressed ? (
+                            <span className="text-green-600 font-semibold">Addressed</span>
+                          ) : (
+                            <span className="text-yellow-600 font-semibold">Pending</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Button size="sm" variant="ghost" onClick={() => handleEdit(submission)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => handleMarkAddressed(submission.id)}>
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => handleDelete(submission.id)}>
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -349,6 +500,58 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
+            {/* Edit Modal */}
+            {editingSubmission && editForm && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-background text-foreground border border-border rounded-lg p-6 shadow-2xl w-full max-w-md">
+                  <h2 className="text-xl font-bold mb-4">Edit Submission</h2>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium mb-1">Name</label>
+                    <input
+                      className="w-full border rounded px-2 py-1 bg-muted text-foreground"
+                      value={editForm.name}
+                      onChange={e => handleEditFormChange("name", e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium mb-1">Email</label>
+                    <input
+                      className="w-full border rounded px-2 py-1 bg-muted text-foreground"
+                      value={editForm.email}
+                      onChange={e => handleEditFormChange("email", e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium mb-1">Phone</label>
+                    <input
+                      className="w-full border rounded px-2 py-1 bg-muted text-foreground"
+                      value={editForm.phone || ""}
+                      onChange={e => handleEditFormChange("phone", e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium mb-1">Service</label>
+                    <input
+                      className="w-full border rounded px-2 py-1 bg-muted text-foreground"
+                      value={editForm.service}
+                      onChange={e => handleEditFormChange("service", e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium mb-1">Message</label>
+                    <textarea
+                      className="w-full border rounded px-2 py-1 bg-muted text-foreground"
+                      value={editForm.message}
+                      onChange={e => handleEditFormChange("message", e.target.value)}
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <Button size="sm" onClick={() => { setEditingSubmission(null); setEditForm(null); }}>Cancel</Button>
+                    <Button size="sm" variant="default" onClick={handleEditFormSave}>Save</Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 
